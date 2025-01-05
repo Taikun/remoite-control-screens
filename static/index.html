@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Control Remoto - Fallout Style</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #00ff00;
+      font-family: "Courier New", Courier, monospace;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2em;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #00ff00;
+    }
+    input {
+      width: 80%;
+      padding: 10px;
+      font-size: 1em;
+      background-color: #222;
+      border: 1px solid #00ff00;
+      color: #00ff00;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #222;
+      border: 1px solid #00ff00;
+      color: #00ff00;
+      cursor: pointer;
+      text-shadow: 0 0 10px #00ff00;
+    }
+    button:hover {
+      background-color: #00ff00;
+      color: #000;
+    }
+    .message {
+      margin-top: 20px;
+      font-size: 1em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Control Remoto</h1>
+    <p>Introduce la URL para cambiar el destino del kiosko:</p>
+    <input type="text" id="urlInput" placeholder="http://example.com" />
+    <button onclick="setURL()">Cambiar URL</button>
+    <div class="message" id="message"></div>
+  </div>
+
+  <script>
+    async function setURL() {
+      const urlInput = document.getElementById("urlInput").value;
+      const messageElement = document.getElementById("message");
+
+      try {
+        const response = await fetch("/set_url", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: urlInput })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          messageElement.textContent = `URL actualizada a: ${data.url}`;
+        } else {
+          messageElement.textContent = "Error al cambiar la URL. Revisa la consola.";
+        }
+      } catch (error) {
+        messageElement.textContent = "Error de red. Revisa la conexión.";
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+</html>
